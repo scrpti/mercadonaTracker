@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16
+    container_name: mercadona_db
+    environment:
+      POSTGRES_DB: mercadona_tracker
+      POSTGRES_USER: tracker_user
+      POSTGRES_PASSWORD: 151115
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  tracker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: mercadona_tracker_app
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://tracker_user:151115@db:5432/mercadona_tracker
+    volumes:
+      - ./app:/app
+
+volumes:
+  postgres_data:
